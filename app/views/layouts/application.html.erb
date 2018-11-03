@@ -28,8 +28,16 @@
       </div>
     </header>-->
     <div class = "container">
+      <% flash.each do |message_type, message| %>
+        <!--<div class = "alert alert-<%= message_type %>"><%= message %></div>-->
+        <%= content_tag(:div, message, class: "alert alert-#{message_type}") %>
+      <% end %>
       <%= yield %>
       <%= render "layouts/footer" %>
+      <!--ビルトインのdebugメソッドとparams変数を使って、
+      各プロフィールページにデバッグ用の情報が表示されるようになります
+    開発環境だけでデバッグ情報は出したいからifを書いた-->
+      <%= debug(params) if Rails.env.development? %>
     </div>
   </body>
 </html>
