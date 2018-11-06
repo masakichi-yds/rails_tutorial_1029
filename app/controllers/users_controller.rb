@@ -13,6 +13,9 @@ class UsersController < ApplicationController
     #code
     @user = User.new(user_params)
     if @user.save
+      #登録された時点でログイン情報を与える
+      #session[:user_id] = user.id
+      log_in @user
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user #どういう経緯か？
                         #redirect_to("/users/#{@user.id}")相対パスから絶対パス

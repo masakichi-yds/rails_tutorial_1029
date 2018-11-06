@@ -6,12 +6,33 @@
 #fixture内のサンプルデータはバリデーションを通っていなかったので
 #今まで問題にはなっていなかっただけでした)。
 
-
-
 #one:
 #  name: MyString
 #  email: MyString
 
 #two:
 #  name: MyString
-#  email: MyString
+#  email: MyStrin
+
+#テスト時に登録済みユーザーとしてログインしておく必要があります。
+#当然ながら、データベースにそのためのユーザーが登録されていなければなりません。
+#Railsでは、このようなテスト用データをfixture (フィクスチャ) で作成できます。
+#このfixtureを使って、テストに必要なデータをtestデータベースに読み込んでおくことができます。
+#has_secure_passwordで必要となるpassword_digest属性はこれで準備できましたが、
+#ハッシュ化されていない生のパスワードも参照できると便利です。
+#しかし残念なことに、fixtureではこのようなことはできません。
+#さらに、リスト 8.22にpassword属性を追加すると、
+#そのようなカラムはデータベースに存在しないというエラーが発生します。
+#実際、データベースにはそんなカラムはありません。
+#この状況を切り抜けるため、
+#テスト用のfixtureでは全員同じパスワード「password」を使うことにします (これはfixtureでよく使われる手法です)。
+
+michael:
+  name: Michael Example
+  email: michael@example.com
+  password_digest: <%= User.digest('password') %>
+
+#有効なユーザー用のfixtureを作成できたので、
+#テストではuser = users(:michael)で参照できる
+#上のusersはfixtureのファイル名users.ymlを表し、
+#:michaelというシンボルはリスト 8.22のユーザーを参照するためのキーを表します。
