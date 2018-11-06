@@ -31,6 +31,8 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                           password: "password",
                           password_confirmation: "password"}}
     end
+    #ちゃんとログイン情報は保持していますか？
+    assert is_logged_in?
     #無事保存さえたらredirect
     follow_redirect!
     #usersのshowのviewが表示
