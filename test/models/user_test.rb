@@ -106,4 +106,13 @@ class UserTest < ActiveSupport::TestCase
     #５文字だから無効ですよね？
     assert_not @user.valid?
   end
+
+  test "authenticated? should return false for a user with nil digest" do
+    #記憶ダイジェストを持たないユーザーを用意し
+    #(setupメソッドで定義した@userインスタンス変数ではtrueになります)、
+    #続いてauthenticated?を呼び出します (リスト 9.17)。
+    #この中で、記憶トークンを空欄のままにしていることにご注目ください。
+    #記憶トークンが使われる前にエラーが発生するので、記憶トークンの値は何でも構わないのです。
+    assert_not @user.authenticated?('')
+  end
 end

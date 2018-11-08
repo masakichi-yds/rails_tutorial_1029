@@ -20,4 +20,22 @@ class ActiveSupport::TestCase
     #user_id空ではないですよね？＝ありますよね？＝ログイン中ですよね？
     !session[:user_id].nil?
   end
+  #remember_meボックスのテストで使う
+  def log_in_as?(user)
+    #テストユーザーとしてログインする
+    session[:user_id] = user.id
+  end
+
+  #統合テストでも同様のヘルパーを実装していきます。
+  #ただし統合テストではsessionを直接取り扱うことができないので、
+  #代わりにSessionsリソースに対してpostを送信することで代用します
+  #メソッド名は単体テストと同じ、log_in_asメソッドとします。
+  class ActionDispatch::IntegrationTest
+    #テストコードがより便利になるように、
+    #log_in_asメソッド (リスト 9.24) ではキーワード引数 (リスト 7.13) のパスワードと
+    #[remember me] チェックボックスのデフォルト値を、それぞれ’password’と’1’に設定しています。)
+    def log_in_as(user, password: 'password', remember_me: '1')
+      post login_path, params: {session: {email: user.email, password: password, remember_me: remember_me}}
+    end
+  end
 end
