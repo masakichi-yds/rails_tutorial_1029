@@ -4,6 +4,21 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.1'
 gem 'jquery-rails'
 gem 'bcrypt', '3.1.12'
+#GemfileにFaker gemを追加します
+#これは、実際にいそうなユーザー名を作成するgemです
+#ちなみにfaker gemは開発環境以外では普通使いませんが、
+#今回は例外的に本番環境でも適用させる予定 (10.5) なので、
+#次のようにすべての環境で使えるようにしています。
+gem 'faker', '1.9.1'
+
+#Railsには豊富なページネーションメソッドがあります。
+#今回はその中で最もシンプルかつ堅牢なwill_paginateメソッドを
+#使ってみましょう。これを使うためには、Gemfileにwill_paginate gem
+# とbootstrap-will_paginate gemを両方含め
+#、Bootstrapのページネーションスタイルを使って
+#will_paginateを構成する必要があります。
+gem 'will_paginate', '3.1.6'
+gem 'bootstrap-will_paginate', '1.0.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'
 # Use mysql as the database for Active Record

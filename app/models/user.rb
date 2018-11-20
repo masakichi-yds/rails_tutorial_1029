@@ -17,7 +17,18 @@ class User < ApplicationRecord
                     format: {with:VALID_EMAIL_REGEX},
                     uniqueness: {case_sensitive:false}
   has_secure_password
-  validates :password, length: {minimum: 6}
+  validates :password, presence: true, length: {minimum: 6},
+  allow_nil: true
+  #パスワードのバリデーションに対して、空だったときの例外処理を加える必要があります。
+  #こういったときに便利なallow_nil: trueというオプションがあるので、これを validatesに追加
+  #新規ユーザー登録時に空のパスワードが有効になってしまうのかと心配になるかもしれませんが、
+  #安心してください。6.3.3で説明したように、has_secure_passwordでは
+  # (追加したバリデーションとは別に) オブジェクト生成時に存在性を検証するようになっているため、
+  #空のパスワード (nil) が新規ユーザー登録時に有効になることはありません。
+  #(空のパスワードを入力すると存在性のバリデーションとhas_secure_passwordによるバリデーションが
+  #それぞれ実行され、2つの同じエラーメッセージが表示されるというバグがありましたが (7.3.3)、
+  #これで解決できました。)
+
 
   #渡された文字列のハッシュ値を返す
   #テスト中にそのユーザーとして自動ログインするために、
