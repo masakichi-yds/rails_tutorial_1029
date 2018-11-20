@@ -28,6 +28,11 @@ module SessionsHelper
     cookies.permanent[:remember_token] = user.remember_token
   end
 
+  #渡されたユーザ＾がログイン済みのユーザーであればtrue
+  def current_user?(user)
+    user == current_user
+  end
+
   def current_user
     #if @current_user.nil?
     #   @current_user = User.find_by(id: session[:user_id])
@@ -40,9 +45,11 @@ module SessionsHelper
     #Userオブジェクトそのものの論理値は常にtrueになることです。
     #そのおかげで、@current_userに何も代入されていないときだけfind_by呼び出しが実行され、無駄なデータベースへの読み出しが行われなくなります。
     if (user_id = session[:user_id])
+      #==ではないから代入だよ
       #session[:user_id]があるなら以下を実行
       #上の短縮形
-      @current_user ||= User.find_by(id: session[:user_id])
+      #@current_user ||= User.find_by(id: session[:user_id])
+      @current_user ||= User.find_by(id: user_id)
     #もしcookieを持っていたなら、クッキーのユーザーidを代入
     elsif (user_id = cookies.signed[:user_id])
       #そのcookieからユーザーidを見つけ出す
@@ -78,5 +85,32 @@ module SessionsHelper
     #session[usr_id] = nil
     session.delete(:user_id)
     @current_user = nil
+  end
+
+  #ユーザーを希望のページに転送するには、
+  #リクエスト時点のページをどこかに保存しておき、
+  #その場所にリダイレクトさせる必要があります。
+  #この動作をstore_locationとredirect_back_orの2つのメソッドを使って実現してみましょう。
+
+  #記憶したURL（もしくはデフォルト値）にリダイレクト
+  def redirect_back_or(default)
+    #sessionにリダイレクト先のURLが入っているかどうか、入ってないならデフォルトのURL先に
+    redirect_to(session[:forwarding_url] || default)
+    #一回使ったら無かったことにする
+    #転送用のURLを削除している点にも注意してください。
+    #これをやっておかないと、次回ログインしたときに保護されたページに転送されてしまい
+    #、ブラウザを閉じるまでこれが繰り返されてしまいます
+    session.delete(:forwarding_url)
+  end
+  #上のsessionに入っているURL先はどこでセットするか
+  #アクセスしようとしたURLを覚えておく
+  def store_location
+    #request.original_urlでリクエスト先が取得できます
+    #リクエストを送ってきたユーザのヘッダー情報や環境変数を取得する
+    #リクエストが送られたURLをsession変数の:forwarding_urlキーに格納しています。
+    #ただし、GETリクエストが送られたときだけ格納するようにしておきます。
+    #これによって、例えばログインしていないユーザーがフォームを使って送信した場合、
+    #転送先のURLを保存させないようにできます。
+    session[:forwarding_url] = request.original_url if request.get?
   end
 end

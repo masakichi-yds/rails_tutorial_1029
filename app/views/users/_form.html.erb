@@ -1,0 +1,23 @@
+<!--  yeildを使ってurlを変数としてprovideに渡す-->
+<%= form_for(@user, url: yield(:url)) do |f| %>
+<!--’shared/error_messages’というパーシャルをrender (描画)
+ している点に注目してください。Rails全般の慣習として、
+ 複数のビューで使われるパーシャルは専用のディレクトリ「shared」によく置かれます-->
+<%= render 'shared/error_messages' %>
+ <!--オブジェクトは、HTMLフォーム要素 (テキストフィールド、ラジオボタン、
+  パスワードフィールドなど) に対応するメソッドが呼び出されると@userの
+  属性を設定するために特別に設計されたHTMLを返します-->
+  <%= f.label :name %>
+  <%= f.text_field :name, class: 'form-control' %>
+
+  <%= f.label :email %>
+  <%= f.email_field :email, class: 'form-control' %>
+
+  <%= f.label :password %>
+  <%= f.password_field :password, class: 'form-control' %>
+
+  <%= f.label :password_confirmation, "Confirmation" %>
+  <%= f.password_field :password_confirmation, class: 'form-control' %>
+<!--  yeildを使ってbutton_textを変数としてprovideに渡す-->
+  <%= f.submit yield(:button_text), class: "btn btn-primary" %>
+<% end %>

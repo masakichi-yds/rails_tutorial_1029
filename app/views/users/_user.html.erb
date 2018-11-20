@@ -1,0 +1,12 @@
+<li>
+  <%= gravatar_for user, size:50 %>
+  <!--  userはuser_path(user)=#{users/:id}=show action-->
+  <%= link_to user.name, user %>
+  <!--  削除リンク
+必要なDELETEリクエストを発行するリンクの生成は、method: :deleteによって行われている点に注意してください。また、各リンクをif文で囲い、
+管理者にだけ削除リンクが表示されるようにしています。-->
+  <% if current_user.admin? && !current_user?(user) %>
+   | <%= link_to "delete", user, method: :delete, data: {comfirm:"You sure?"} %>
+  <% end %>
+
+</li>

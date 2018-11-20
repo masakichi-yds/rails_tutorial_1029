@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   def new
+    #debugger
   end
 
   def create
@@ -12,7 +13,8 @@ class SessionsController < ApplicationController
       #そこで記憶トークンを生成してトークンのダイジェストをデータベースに保存します。
       #三項演算子を使い、チェックボックスがオンならremember,ないなら、forgetを実行
       params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
-      redirect_to @user #どういう経緯か？
+      redirect_back_or @user
+      #redirect_to @user #どういう経緯か？
                         #redirect_to("/users/#{@user.id}")相対パスから絶対パス
                         #redirect_to("https://228e5b796b37495aa0c17e02856dccfa.vfs.cloud9.us-east-2.amazonaws.com/users/#{@user.id}")
                         #redirect_to(user_url(@user.id))絶対パスの変換
